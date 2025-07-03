@@ -61,10 +61,12 @@ async def handle_ai_tts(message):
         
         await message.channel.send(file=audio_file)
 
+
 # AI Instructions
 async def change_instructions(message):
     """Changes the AI for how to speak"""
     global new_instructions
     prompt = message.content[6:].strip()
     new_instructions = prompt
-    await message.channel.send("Voice changed")
+    print("Voice Changed")
+
