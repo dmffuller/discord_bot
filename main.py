@@ -28,7 +28,7 @@ cursor = conn.cursor()
 # Responds to Hello message
 async def hello_response(message):
     """Says a nice message"""
-    await message.channel.send("Hey loser")
+    await message.channel.send("Hey fella")
 
 # Log User Messages
 async def log_message(message):
@@ -51,7 +51,7 @@ async def log_message(message):
 # Yap Checker
 async def yap_check():
     """Checks who is talking the most"""
-    server_name = "VR Chat Losers"
+    # server_name = "Your Server Name"
     
     cursor.execute("""
     SELECT
@@ -67,7 +67,7 @@ async def yap_check():
     ORDER BY
         message_count DESC
     LIMIT 1
-    """, (server_name,))
+    """)#, (server_name,))
 
     row = cursor.fetchone()
     if row:
