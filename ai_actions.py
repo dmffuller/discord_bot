@@ -14,17 +14,16 @@ OPENAI_TOKEN = os.getenv("OPENAI_TOKEN")
 client = OpenAI(api_key=OPENAI_TOKEN)
 
 # AI Prompt - Text
-async def handle_ai_text(message):
-    prompt = message.content[3:].strip()
-    if prompt == "":
-        await message.channel.send("No prompt entered")
+async def handle_ai_text(prompt: str, send_func):
+    if prompt.strip() == "":
+        await send_func("No prompt entered")
     else:
         response = client.chat.completions.create(
         model="gpt-4o-mini",
         messages=[{"role": "user", "content": f"A discord user is giving you a prompt. Please keep responses under 3 sentences unless asked otherwise. Here is the prompt: {prompt}"}]
     )
         content = response.choices[0].message.content
-        await message.channel.send(content)
+        await send_func(content)
 
 # AI Prompt - Image
 async def handle_ai_image(message):
@@ -43,10 +42,9 @@ async def handle_ai_image(message):
         await message.channel.send(image_url)
 
 # AI Prompt - Audio
-async def handle_ai_tts(message):
-    prompt = message.content[4:].strip()
+async def handle_ai_tts(prompt: str, send_func):
     if prompt == "":
-        await message.channel.send("No prompt entered")
+        await send_func("No text entered")
     else:
         response = client.audio.speech.create(
             model="gpt-4o-mini-tts",
@@ -59,14 +57,13 @@ async def handle_ai_tts(message):
         audio_file = discord.File(fp=io.BytesIO(audio_data), filename="speech.mp3")
 
         
-        await message.channel.send(file=audio_file)
+        await send_func(file=audio_file)
 
 
 # AI Instructions
-async def change_instructions(message):
+async def change_instructions(prompt: str):
     """Changes the AI for how to speak"""
     global new_instructions
-    prompt = message.content[6:].strip()
     new_instructions = prompt
     print("Voice Changed")
 
