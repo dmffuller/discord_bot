@@ -8,6 +8,7 @@ from dotenv import load_dotenv
 import sqlite3
 from ai_actions import*
 
+######ALL CODE BELOW IS FOR INIT######
 # Load .env
 load_dotenv()
 DISCORD_TOKEN = os.getenv("DISCORD_TOKEN")
@@ -37,23 +38,35 @@ class MyBot(commands.Bot):
 
 bot = MyBot()
 
-######ALL CODE ABOVE IS FOR INIT######
+conn = sqlite3.connect("bot_data.db")
+cursor = conn.cursor()
 
+######ALL CODE BELOW IS SQL######
+cursor.execute("""
+CREATE TABLE IF NOT EXISTS voice_persona (
+    user_id TEXT PRIMARY KEY,
+    instructions TEXT)               
+""")
+
+conn.commit
+
+######ALL CODE BELOW IS FOR COMMANDS######
 @bot.tree.command(name="ai", description="Sends a prompt to Chat GPT")
 @app_commands.describe(message="Enter your prompt ")
-async def ai_text_discord(interaction: discord.Interaction, message: str):
+async def ai_text(interaction: discord.Interaction, message: str):
     await handle_ai_text(message, interaction.response.send_message)
 
 @bot.tree.command(name="text_to_speech", description="Converts text to speech with a random voice.")
 @app_commands.describe(message="Enter your text to be converted ")
-async def ai_tts_discord(interaction: discord.Interaction, message: str):
+async def ai_tts(interaction: discord.Interaction, message: str):
     await handle_ai_tts(message, interaction.response.send_message)
 
 @bot.tree.command(name="voice", description="Changes the instructions for text to speech")
 @app_commands.describe(message="Enter your voice instructions")
-async def ai_voice_discord(interaction: discord.Interaction, message: str):
+async def ai_voice(interaction: discord.Interaction, message: str):
     await interaction.response.send_message("Voice instructions updated!", ephemeral=True)
-    
+
+
 """Examples
 # Example ! prefix command
 @bot.command()
